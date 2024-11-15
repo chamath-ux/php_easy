@@ -1,0 +1,18 @@
+{
+    "name": "chamath/php_easy",
+    "description": "frame work",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/app"
+        }
+    },
+    "authors": [
+        {
+            "name": "chamath1991",
+            "email": "chamath.erplanka@gmail.com"
+        }
+    ],
+    "require": {}
+}
