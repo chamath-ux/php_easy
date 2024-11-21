@@ -11,7 +11,8 @@ abstract class Facade{
      $instance = static::resolveFacadeInstance(static::getFacadeAccessor());
 
      if (!method_exists($instance, $method)) {
-         throw new Exception("Method {$method} does not exist on the facade target.");
+        print_r('error');
+        //  throw new Exception("Method {$method} does not exist on the facade target.");
      }
 
      return call_user_func_array([$instance, $method], $arguments);
