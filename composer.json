@@ -8,7 +8,8 @@
             "App\\": "src/app",
             "Config\\":"config/",
             "Support\\":"support/"
-        }
+        },
+        "files": ["support/Database/helpers.php"]
     },
     "authors": [
         {
