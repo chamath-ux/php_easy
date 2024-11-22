@@ -8,4 +8,9 @@ Route::get('/home', function () {
         ["id" => 1, "name" => "John Doe"],
         ["id" => 2, "name" => "Jane Doe"]
     ]);
+     echo "Welcome to the homepage!";    
+});
+
+Route::get('/home1', function () {
+    echo "Welcome to the homepage1!";
 });
