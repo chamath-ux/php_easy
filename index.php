@@ -7,10 +7,6 @@ use App\Http\TestController;
 
 $test = new TestController();
 
-use App\Http\TestController;
-
-$test = new TestController();
-
 echo"<pre>";
 print_r($test->test(1));
 echo"</pre>"; 

@@ -5,39 +5,21 @@ namespace Support\lib;
 class Router{
 
     private $routes = [];
-    private $basePath = '';
-
-    public  function setBasePath($basePath) {
-        $this->basePath = rtrim($basePath, '/');
-        // print_r($this->basePath);
-    }
 
     public function get($path,$callback)
     {
-        $fullPath = $this->basePath . $path;
-        // print_r($fullPath);
-        $this->addRoute('GET',$fullPath,$callback);
+        $this->addRoute('GET',$path,$callback);
     }
 
     public function post()
     {
-        $fullPath = $this->basePath . $path;
-        $this->addRoute('POST',$fullPath,$callback); 
-    }
-
-    public function loadRoutes($file)
-    {
-        // if(isset($file))
-        // {
-            require_once $file;
-        // }
+        $this->addRoute('POST',$path,$callback); 
     }
 
     private function addRoute($method,$path,$callback)
     {
         // print_r($path);
         $this->routes[$method][$path] = $callback;
-        $this->dispatch();
     }
 
     public function dispatch() {
@@ -47,7 +29,7 @@ class Router{
         if (isset($this->routes[$method][$uri])) {
             call_user_func($this->routes[$method][$uri]);
         } else {
-            // $this->handleNotFound();
+            $this->handleNotFound();
         }
     }
 
