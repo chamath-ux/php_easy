@@ -3,7 +3,7 @@
 namespace Support\Facades;
 
 use Support\Facade;
-use Support\Helper\Logger;
+use Support\lib\Logger;
 
 class Log extends Facade{
 

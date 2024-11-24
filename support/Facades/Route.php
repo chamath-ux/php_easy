@@ -3,7 +3,7 @@
 namespace Support\Facades;
 
 use Support\Facade;
-use Support\Helper\Router;
+use Support\lib\Router;
 
 class Route extends Facade{
 
