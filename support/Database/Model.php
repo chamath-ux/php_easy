@@ -9,23 +9,44 @@ class Model{
     protected $table;
     protected $primaryKey = 'id';
     protected $attributes = [];
-    private $connection;
-    public function __construct()
+    private static $connection;
+    public function __construct(array $attributes = [])
     {
-        $this->connection = DatabaseFactory::connect(Config::get('database.default'));
+        $this->attributes = $attributes;
     }
 
-    public function all()
+    public static function setConnection(){
+        self::$connection = DatabaseFactory::connect(Config::get('database.default'));
+    }
+
+    public static function all()
     {
-        $stmt = $this->connection->connect()->query("SELECT * FROM {$this->table}");
+        $instance = new static();
+        $stmt = self::$connection->connect()->query("SELECT * FROM {$instance->getTable()}");
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function find($id)
+    public static function find($id)
     {
-        $stmt = $this->connection->connect()->prepare("SELECT * FROM {$this->table} WHERE {$this->primaryKey} = :id");
+        $instance = new static();
+        $stmt = self::$connection->connect()->prepare("SELECT * FROM {$instance->getTable()} WHERE {$instance->primaryKey} = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    private function getTable() : string
+    {
+        return $this->table ?? strtolower((new \ReflectionClass($this))->getShortName()). 's';
+    }
+
+    public function create()
+    {
+        $instance = new static();
+        foreach ($instance->attributes as $key => $attribute) {
+            $stmt = self::$connection->connect()->query("INSERT INTO {$instance->getTable()} ($attribute,) {$instance->getTable()}");
+        }
+       
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
 }
