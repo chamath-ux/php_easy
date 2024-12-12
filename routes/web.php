@@ -1,12 +1,13 @@
 <?php
 
 use Support\Facades\Route;
+use App\Http\TestController;
+use App\Http\UserController;
 
+/**
+ * In here you can define Routes
+ */
 
-Route::get('/home', function () {
-     echo "Welcome to the homepage!";    
-});
-
-Route::get('/home1', function () {
-    echo "Welcome to the homepage1!";
-});
+Route::middleware('auth')->get('/home', [TestController::class,'test']);
+Route::middleware('auth')->get('/home2', [TestController::class,'test1']);
+Route::middleware('auth')->get('/user', [UserController::class,'getUser']);

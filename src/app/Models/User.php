@@ -3,7 +3,7 @@
 namespace App\Models;
 use Support\Database\Model;
 
-class Test extends Model{
+class User extends Model{
 
     protected $primaryKey = 'id';
     
