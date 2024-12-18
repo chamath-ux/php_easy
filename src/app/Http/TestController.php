@@ -5,6 +5,7 @@ use App\Http\Controller;
 use App\Models\Test;
 use Support\Facades\Log;
 use Exception;
+use Support\Facades\DB;
 
 class TestController{
 
@@ -12,8 +13,7 @@ class TestController{
     {
         try{
 
-            
-            $test = Test::find(3);
+            $test = Test::select('firstname')->get();
 
             if(!$test)
             {
