@@ -11,6 +11,8 @@ protected $orderBy;
 protected $limit;
 protected $offset;
 protected $min;
+protected $max;
+protected $join;
 
 
 public function setTable($table):void
@@ -75,6 +77,24 @@ public function addCondition(string $key,string $condition,string $value, $not):
      $this->min = sprintf(" MIN(%s) as {$min}",$min);
    }
 
+   /**
+   * @param string $max
+   */
+
+   public function setMax($max)
+   {
+     $this->max = sprintf(" MAX(%s) as {$max}",$max);
+   }
+
+   /**
+   * @param string $max
+   */
+
+   public function setJoin($table2,$column1,$condition,$column2)
+   {
+     $this->join = sprintf(" INNER JOIN %s ON %s %s %s",$table2,$column1,$condition,$column2);
+   }
+
 /**
  * build a sql query
  */
@@ -82,17 +102,21 @@ public function addCondition(string $key,string $condition,string $value, $not):
     public function build():string
     {
 
-        if(empty($this->fields) &&  empty($this->min))
+        if(empty($this->fields) &&  empty($this->min) && empty($this->max))
         {
             $field = '*';
 
-        }else if(!empty($this->fields) &&  empty($this->min)){
+        }else if(!empty($this->fields) &&  (empty($this->min) && empty($this->max))){
 
         $field= implode(',', $this->fields);
 
-        }else if(empty($this->fields) &&  !empty($this->min)){
+        }else if((empty($this->fields) && empty($this->max)) &&  !empty($this->min)){
 
             $field = $this->min;
+
+        }else if((empty($this->fields) &&  empty($this->min)) && !empty($this->max))
+        {
+            $field = $this->max;
         }
 
         $sql =sprintf("SELECT %s  FROM %s",$field,$this->table);
@@ -114,6 +138,10 @@ public function addCondition(string $key,string $condition,string $value, $not):
         if(!empty($this->offset))
         {
             $sql .= $this->offset;
+        }
+        
+        if(!empty($this->join)){
+            $sql .= $this->join;
         }
 
         

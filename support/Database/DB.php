@@ -81,8 +81,33 @@ public function min($min):object
     return $this;
 }
 
+/**
+ * @param string $table1
+ * @param string $table2
+ * @param string $column1
+ * @param string $condition
+ * @param string $column2
+ */
+
+ public function join($table2,$column1,$condition,$column2):object
+ {
+     $this->queryBuilder->setJoin($table2,$column1,$condition,$column2);
+     return $this;
+ }
+
+/**
+ * @param string $max
+ */
+
+ public function max($max):object
+ {
+     $this->queryBuilder->setMax($max);
+     return $this;
+ }
+
 public function get()
 {
+    // return $this->queryBuilder->build();
     $stmt = $this->connection->connect()->prepare($this->queryBuilder->build());
     $stmt->execute();
     return $stmt->fetchAll(\PDO::FETCH_ASSOC);
