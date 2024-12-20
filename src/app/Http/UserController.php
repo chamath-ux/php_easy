@@ -12,14 +12,18 @@ class UserController{
     {
         try{
 
-            $user = User::find(2);
+            $user = User::find(1);
 
             if(!$user)
             {
                 throw new Exception('User Not Found');
             }
 
-            return response()->json(['status'=>'success','data'=>$user,'code'=>200]);
+            return response()->json([
+                'status'=>'success',
+                'data'=>$user,
+                'code'=>200
+                ]);
 
         }catch(Exception $e)
         {
@@ -37,10 +41,31 @@ class UserController{
 
     public function all()
     {
-        // Log::info('chec1k controller');
-        $users = User::all();
-      
-        print_r($users);
+        try{
+
+            $users = User::all();
+
+            if(!$users)
+            {
+                throw new Exception('Users Not Found');
+            }
+
+            return response()->json([
+                'status'=>'success',
+                'data'=>$users,
+                'code'=>200
+                ]);
+
+        }catch(Exception $e)
+        {
+            Log::error('all in UserController '.$e->getMessage());
+            
+            return response()->json([
+                'status'=>'error',
+                'message'=>$e->getMessage(),
+                'code'=>500
+                ]);
+        }
        
     }
 
