@@ -5,7 +5,7 @@ namespace Support\Database;
 class QueryBuilder{
 
 private $table;
-protected $fields = [];
+protected $fields;
 protected $where = [];
 protected $orderBy;
 protected $limit;
@@ -13,6 +13,9 @@ protected $offset;
 protected $min;
 protected $max;
 protected $join;
+protected $union;
+protected $groupBy;
+protected $count;
 
 
 public function setTable($table):void
@@ -37,7 +40,7 @@ public function addCondition(string $key,string $condition,string $value, $not):
 
  public function setSelect($fields):void
  {
-    $this->fields[] = $fields;
+    $this->fields = $fields;
  }
 
   /**
@@ -86,13 +89,70 @@ public function addCondition(string $key,string $condition,string $value, $not):
      $this->max = sprintf(" MAX(%s) as {$max}",$max);
    }
 
-   /**
-   * @param string $max
-   */
+    /**
+     * @param string $table1
+     * @param string $table2
+     * @param string $column1
+     * @param string $condition
+     * @param string $column2
+     * @param string 'inner' join type
+    */
 
-   public function setJoin($table2,$column1,$condition,$column2)
+   public function setJoin($table2,$column1,$condition,$column2,$type)
    {
-     $this->join = sprintf(" INNER JOIN %s ON %s %s %s",$table2,$column1,$condition,$column2);
+
+     $joinType = function($type):string
+     {
+        if($type == 'inner')
+        {
+            return 'INNER JOIN';
+
+        }else if($type == 'left')
+        {
+            return 'LEFT JOIN';
+
+        }else if($type == 'right')
+        {
+            return 'RIGHT JOIN';
+        }
+     };
+     $this->join = sprintf(" %s %s ON %s %s %s",$joinType($type),$table2,$column1,$condition,$column2);
+   }
+
+   public function setGroupBy($groupColumn)
+   {
+        $this->groupBy = sprintf(" GROUP BY %s ", $groupColumn);
+   }
+
+   public function setCount($count)
+   {
+        $this->count = sprintf(" COUNT(%s)",$count);
+        
+   }
+
+   public function selectFields()
+   {
+    if(empty($this->fields) &&  empty($this->min) && empty($this->max))
+    {
+        $field = '*';
+
+    }else if(!empty($this->fields) &&  (empty($this->min) && empty($this->max))){
+
+    $field= implode(',', $this->fields);
+
+    }else if((empty($this->fields) && empty($this->max)) &&  !empty($this->min)){
+
+        $field = $this->min;
+
+    }else if((empty($this->fields) &&  empty($this->min)) && !empty($this->max))
+    {
+        $field = $this->max;
+    }else if(!empty($this->count))
+    {
+        $field = $this->count;
+    }
+
+     return $field;
    }
 
 /**
@@ -102,22 +162,7 @@ public function addCondition(string $key,string $condition,string $value, $not):
     public function build():string
     {
 
-        if(empty($this->fields) &&  empty($this->min) && empty($this->max))
-        {
-            $field = '*';
-
-        }else if(!empty($this->fields) &&  (empty($this->min) && empty($this->max))){
-
-        $field= implode(',', $this->fields);
-
-        }else if((empty($this->fields) && empty($this->max)) &&  !empty($this->min)){
-
-            $field = $this->min;
-
-        }else if((empty($this->fields) &&  empty($this->min)) && !empty($this->max))
-        {
-            $field = $this->max;
-        }
+        $field = $this->selectFields();
 
         $sql =sprintf("SELECT %s  FROM %s",$field,$this->table);
 
@@ -142,6 +187,15 @@ public function addCondition(string $key,string $condition,string $value, $not):
         
         if(!empty($this->join)){
             $sql .= $this->join;
+        }
+
+        if(!empty($this->union))
+        {
+            $sql .= $this->union;
+        }
+        if(!empty($this->groupBy))
+        {
+            $sql .= $this->groupBy;
         }
 
         

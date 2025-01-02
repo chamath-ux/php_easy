@@ -13,7 +13,12 @@ class TestController{
     {
         try{
 
-            $test = DB::table('tests')->join('Customers','tests.id','=','Customers.test_id')->get();
+            // $query = DB::table('Customers')->select('education');
+
+            $test = DB::table('tests')->get();
+
+            // $test1 = $test->union($query)->get();
+
 
             if(!$test)
             {
